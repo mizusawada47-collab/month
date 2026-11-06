@@ -1,0 +1,494 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#29231f">
+<title>23rd Monthsary ♡</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#29231f;color:#493b2e;
+ font-family:Georgia,serif;
+}
+button,textarea,input{font:inherit}
+.screen{
+ display:none;min-height:100vh;min-height:100dvh;
+ align-items:center;justify-content:center;
+ flex-direction:column;padding:20px;text-align:center;
+}
+.screen.active{display:flex}
+.card{
+ width:min(100%,430px);padding:30px 22px;
+ background:#f0e5d2;border:1px solid #a99579;
+ box-shadow:0 15px 40px #0005;
+}
+h1{font-size:clamp(25px,7vw,37px);font-weight:normal}
+p{line-height:1.8}
+.small{font-size:12px;opacity:.7}
+button{
+ cursor:pointer;border:1px solid #a99579;
+ background:#594638;color:#f5e9d5;
+ padding:12px 22px;margin-top:12px;
+ border-radius:3px;
+}
+button:active{transform:scale(.97)}
+input,textarea{
+ width:100%;padding:13px;background:#fffaf0;
+ border:1px solid #b7a183;color:#493b2e;
+ text-align:center;
+}
+#colorScreen{transition:background .3s}
+.colors{display:flex;justify-content:center;gap:13px;flex-wrap:wrap;margin:25px}
+.color-choice{
+ width:43px;height:43px;border-radius:50%;
+ border:2px solid white;outline:1px solid #927d68;
+ padding:0;
+}
+
+/* BOOK */
+
+#bookScreen{background:#302820;color:#eadcc5}
+.book-heading{letter-spacing:3px;font-size:13px;margin-bottom:20px}
+.book{
+ width:min(100%,820px);
+ height:min(68dvh,570px);
+ min-height:390px;
+ display:flex;
+ perspective:1400px;
+ filter:drop-shadow(0 15px 15px #0007);
+ position:relative;
+}
+.page{
+ width:50%;height:100%;position:relative;
+ overflow:hidden;padding:clamp(14px,3vw,35px);
+ background:linear-gradient(90deg,#e6d5b8,#f7ecd8 12%,#f3e7d1 90%,#d9c5a5);
+ border:1px solid #b6a083;text-align:left;
+}
+.page.left{border-radius:5px 0 0 5px}
+.page.right{border-radius:0 5px 5px 0}
+.page-content{
+ height:100%;overflow-y:auto;
+ scrollbar-width:thin;
+ font-size:clamp(11px,1.8vw,15px);
+ line-height:1.8;
+}
+.page-content h2{
+ text-align:center;font-weight:normal;
+ font-size:clamp(17px,2.5vw,22px);
+ margin:8px 0 20px;
+}
+.page-number{
+ position:absolute;bottom:8px;left:0;width:100%;
+ text-align:center;font-size:10px;opacity:.5;
+}
+.page img{
+ width:100%;max-height:240px;
+ object-fit:cover;margin:12px auto;
+ border-radius:3px;
+}
+.turning-page{
+ display:none;position:absolute;z-index:5;
+ top:0;right:0;width:50%;height:100%;
+ background:#f2e5ce;
+ transform-origin:left center;
+ backface-visibility:hidden;
+ border:1px solid #b6a083;
+ box-shadow:0 5px 15px #0003;
+}
+.turning-page.animate{
+ display:block;
+ animation:turn .65s ease-in-out forwards;
+}
+@keyframes turn{
+ from{transform:rotateY(0deg)}
+ to{transform:rotateY(-180deg)}
+}
+.turn-front,.turn-back{
+ position:absolute;inset:0;padding:15px;
+ overflow:hidden;backface-visibility:hidden;
+}
+.turn-back{transform:rotateY(180deg);background:#ead9bc}
+
+.book-controls{
+ display:flex;justify-content:center;align-items:center;
+ gap:12px;flex-wrap:wrap;margin-top:20px;
+}
+.book-controls button{
+ background:#dfc9a8;color:#44372d;
+}
+#spreadCounter{font-size:12px;color:#d6c5ac}
+
+@media(max-width:600px){
+ .book{height:min(67dvh,570px);min-height:390px}
+ .page{width:100%;padding:22px}
+ .page.left{display:none}
+ .page.right{border-radius:5px}
+ .turning-page{width:100%;right:0}
+ .page-content{font-size:14px;line-height:1.85}
+}
+
+/* MESSAGE AND FINAL */
+
+textarea{
+ min-height:170px;resize:vertical;
+ text-align:left;line-height:1.7;
+}
+.final-title{font-size:clamp(27px,7vw,43px);line-height:1.5}
+.final-chant{font-size:22px;line-height:2;margin-top:20px}
+</style>
+</head>
+
+<body>
+
+<!-- 1. PASSWORD -->
+
+<section class="screen active" id="passwordScreen">
+ <div class="card">
+  <p class="small">A little surprise awaits you ♡</p>
+  <h1>Before we begin...</h1>
+  <p>Please tell me Mizu's favorite color to unlock this page.</p>
+  <input id="password" placeholder="Your answer..." autocomplete="off">
+  <button onclick="checkPassword()">Unlock ♡</button>
+  <p id="passwordError" class="small"></p>
+ </div>
+</section>
+
+<!-- 2. COLOR SELECTION -->
+
+<section class="screen" id="colorScreen">
+ <div class="card">
+  <p class="small">Something special for you</p>
+  <h1>Please pick a color ♡</h1>
+  <p>Choose whichever color your heart wants.</p>
+
+  <div class="colors">
+   <button class="color-choice" style="background:#d9a5a5"
+   onclick="chooseColor('#d9a5a5')" aria-label="Pink"></button>
+
+   <button class="color-choice" style="background:#b6c8b0"
+   onclick="chooseColor('#b6c8b0')" aria-label="Green"></button>
+
+   <button class="color-choice" style="background:#a9bdd0"
+   onclick="chooseColor('#a9bdd0')" aria-label="Blue"></button>
+
+   <button class="color-choice" style="background:#d7bd91"
+   onclick="chooseColor('#d7bd91')" aria-label="Beige"></button>
+
+   <button class="color-choice" style="background:#b6a4c9"
+   onclick="chooseColor('#b6a4c9')" aria-label="Purple"></button>
+
+   <button class="color-choice" style="background:#e8d5b7"
+   onclick="chooseColor('#e8d5b7')" aria-label="Cream"></button>
+  </div>
+
+  <p id="selectedColor" class="small">No color selected yet.</p>
+  <button onclick="goToBook()">Continue ♡</button>
+ </div>
+</section>
+
+<!-- 3. BOOK -->
+
+<section class="screen" id="bookScreen">
+ <div class="book-heading">A LITTLE BOOK FOR MY BABY ♡</div>
+
+ <div class="book">
+  <div class="page left">
+   <div class="page-content" id="leftContent"></div>
+   <div class="page-number" id="leftNumber"></div>
+  </div>
+
+  <div class="page right">
+   <div class="page-content" id="rightContent"></div>
+   <div class="page-number" id="rightNumber"></div>
+  </div>
+
+  <div class="turning-page" id="turningPage">
+   <div class="turn-front" id="turnFront"></div>
+   <div class="turn-back" id="turnBack"></div>
+  </div>
+ </div>
+
+ <div class="book-controls">
+  <button id="previousBtn" onclick="previousPage()">← Back</button>
+  <span id="spreadCounter"></span>
+  <button id="nextBtn" onclick="nextPage()">Next →</button>
+ </div>
+
+ <button id="closeBookBtn" style="display:none"
+ onclick="closeBook()">Close the book ♡</button>
+
+ <p class="small">Take your time, baby. Read every page. ♡</p>
+
+ <audio id="music" loop preload="none">
+  <source src="The%20Goo%20Goo%20Dolls%20-%20Iris%20(Instrumental).mp3" type="audio/mpeg">
+ </audio>
+</section>
+
+<!-- 4. MESSAGE FOR MIZU -->
+
+<section class="screen" id="messageScreen">
+ <div class="card">
+  <p class="small">Before you leave...</p>
+  <h1>A message for Mizu ♡</h1>
+  <p>Now it's your turn, baby. I want to hear something from you.</p>
+
+  <textarea id="herMessage"
+  placeholder="Write your message for Mizu here..."></textarea>
+
+  <button onclick="submitMessage()">Submit my message ♡</button>
+ </div>
+</section>
+
+<!-- 5. FINAL PAGE -->
+
+<section class="screen" id="finalScreen">
+ <div class="card">
+  <p class="small">And that's a wrap...</p>
+  <h1 class="final-title">HAPPY 23rd MONTHSARY FOR BOTH OF YOU</h1>
+
+  <div class="final-chant">
+   iiyot na yan!<br>
+   iiyot na yan!<br>
+   iiyot na yan!<br>
+   iiyot na yan!
+  </div>
+
+  <p class="small">Made with love by Mizu ♡</p>
+ </div>
+</section>
+
+<script>
+
+// NAVIGATION
+
+function showScreen(id){
+ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+}
+
+// PASSWORD
+
+function checkPassword(){
+ const answer=document.getElementById('password').value.trim().toLowerCase();
+
+ if(answer==='black'){
+  showScreen('colorScreen');
+ }else{
+  document.getElementById('passwordError').textContent=
+  "That's not Mizu's favorite color. Please remember!";
+ }
+}
+
+// COLOR
+
+let chosenColor='#d7bd91';
+
+function chooseColor(color){
+ chosenColor=color;
+ document.getElementById('colorScreen').style.backgroundColor=color;
+ document.getElementById('selectedColor').textContent=
+ 'Your chosen color has been selected ♡';
+}
+
+// BOOK PAGES
+
+const pages=[
+
+`<h2>Hi, my sweet gorgeous Dhafny</h2>
+<p>Today is our kuan, ayna seg English uy boang. HAPPY HAPPY 23rd monthsary po, baby.</p>
+<p>Wa jud ko nag-expect nga maabot ta ani kataas do. Well, ana gani sila ayaw expect aron di ma-disappoint and look wala ko nag-expect wala sad ko na-disappoint WAHHHHH...</p>`,
+
+`<h2>I'm sorry, baby ♡</h2>
+<p>Sorry baby if usahay masuko ko sa imoha, di gud nako iingon nga suko ko but halata ba and kahibaw ko nga mali na siya behavior, behaviour, personality, attitude or basta kanang batasan gud.</p>
+<p>Sorry baby kay usahay ginapikon tika, ganahan gud ko masuko ka HAHAHAHAA idk why but arghh gusto ko mapikon ka do.</p>`,
+
+`<h2>23 MONTHS!!</h2>
+<p>23rd monthsary na nato hon, isa nalang mag 2nd anniversary na ta yeyyyy!! Birthday nimo then gap ra one week kay anniversary nato WAHHHHHH..</p>
+<p>Idk unsa ako i-prepare ana, shetyy kaayo but kaning gibuhat nako kay Friday afternoon ra ko nag-sugod maong gamay ra kaayo siya.</p>`,
+
+`<h2>For my baby ♡</h2>
+<p>Sorry baby po if mao ra ni akong mahatag sa imoha, kahibaw man ko ba enough na ni for you but I wish I could do better than this. Mubawi ra ko sunod po baby po.</p>
+<p>ALWAYS TIKA LOVEEEE bisa'g bida-bida ka mu mid.</p>
+<p>You'll be my forever dark system partner and always tika love bisa'g you can't beat me sa Roblox kasi you're so so weaklings.</p>`,
+
+`<h2>Stay healthy, baby ♡</h2>
+<p>I LOVE YOU ALWAYS POOO BABYYY AND HAPPY HAPPYYY 23RD MONTHSARY SA ATOA PO.</p>
+<p>Hope mag-stay healthy atong relationship. Bisa'g busy ta unta walay mag-change sa atong, bisa'g naa gud but strong ra gihapon ta dapat.</p>
+<p>Ana ra, ug please baby stay healthy sad, di ra atong rs but dapat kita sad duha.</p>
+<p>Kana bang muingon ka naa kay gibati do kay sisihon lagi nako na akong kaugalingon kay alangan nag-ingana ka tungod kay nalimot kag kaon, wa kay gana mukaon, or late ka mukaon and matug tungod na sa akoa.</p>`,
+
+`<h2>One more sorry, baby ♡</h2>
+<p>So if di ka gusto sisihon nako akong kaugalingon then help yourself sad baby po.</p>
+<p>And ang pinaka big thing nga akong i-sorry sa imoha is kana gud kapoy kas school or need nimog comfort kay wala koy ginabuhat do.</p>
+<p>Dili na tungod kay wala koy pake, wala ra jud ko kahibaw asa mag-start or unsa ang iingon or buhaton.</p>`,
+
+`<h2>Happy 23rd monthsary!!</h2>
+<p>HAPPY HAPPY 23rd MONTHSARY again po, babyyyy!!</p>
+<p>I love you more than anything else po, take care of yourself always and stay gorgeous my sweet baby!</p>
+<p style="text-align:center;font-size:25px">♡ ♡ ♡</p>`,
+
+`<h2>My Poppy Polly Pookie ♡</h2>
+<img src="images%20(5).jpeg" alt="Our special photo">
+<p style="text-align:center;font-size:15px">
+I LOVE YOUUUU, MY POPPY POLLY POOKIE NAMI BABY HONEY DAUFEIJIU DHAFNY DUBIDUBIDAPDAP AND NGGANYNYYY!!
+</p>`
+
+];
+
+// RESPONSIVE BOOK
+
+let currentPage=0;
+let pagesPerSpread=window.innerWidth>600?2:1;
+let isAnimating=false;
+
+function updatePageMode(){
+ const newMode=window.innerWidth>600?2:1;
+
+ if(newMode!==pagesPerSpread){
+  pagesPerSpread=newMode;
+  currentPage=Math.floor(currentPage/pagesPerSpread)*pagesPerSpread;
+  renderBook();
+ }
+}
+
+window.addEventListener('resize',updatePageMode);
+
+function renderBook(){
+ const left=document.getElementById('leftContent');
+ const right=document.getElementById('rightContent');
+
+ if(pagesPerSpread===2){
+  left.innerHTML=pages[currentPage]||'';
+  right.innerHTML=pages[currentPage+1]||'';
+  left.parentElement.style.display='block';
+
+  document.getElementById('leftNumber').textContent=currentPage+1;
+  document.getElementById('rightNumber').textContent=currentPage+2;
+ }else{
+  left.parentElement.style.display='none';
+  right.innerHTML=pages[currentPage]||'';
+  document.getElementById('rightNumber').textContent=currentPage+1;
+ }
+
+ const lastPage=pages.length-pagesPerSpread;
+
+ document.getElementById('previousBtn').style.display=
+ currentPage===0?'none':'block';
+
+ document.getElementById('nextBtn').style.display=
+ currentPage>=lastPage?'none':'block';
+
+ document.getElementById('closeBookBtn').style.display=
+ currentPage>=lastPage?'block':'none';
+
+ document.getElementById('spreadCounter').textContent=
+ (Math.floor(currentPage/pagesPerSpread)+1)+' / '+
+ Math.ceil(pages.length/pagesPerSpread);
+}
+
+function goToBook(){
+ currentPage=0;
+ showScreen('bookScreen');
+ renderBook();
+}
+
+// MUSIC
+
+let musicStarted=false;
+
+function startMusic(){
+ if(musicStarted)return;
+
+ const music=document.getElementById('music');
+ music.volume=.45;
+
+ music.play().then(()=>{
+  musicStarted=true;
+ }).catch(()=>{
+  console.log('Tap again to start music.');
+ });
+}
+
+document.getElementById('book').addEventListener('click',startMusic);
+
+// PAGE FLIPPING
+
+function nextPage(){
+ if(isAnimating||currentPage>=pages.length-pagesPerSpread)return;
+ flipPage(1);
+}
+
+function previousPage(){
+ if(isAnimating||currentPage<=0)return;
+ flipPage(-1);
+}
+
+function flipPage(direction){
+ isAnimating=true;
+
+ const turning=document.getElementById('turningPage');
+ const front=document.getElementById('turnFront');
+ const back=document.getElementById('turnBack');
+
+ turning.style.width=pagesPerSpread===2?'50%':'100%';
+
+ if(direction===1){
+  front.innerHTML=pages[currentPage+(pagesPerSpread===2?1:0)]||'';
+  back.innerHTML=pages[currentPage+pagesPerSpread]||'';
+  turning.style.right='0';
+  turning.style.transformOrigin='left center';
+ }else{
+  front.innerHTML=pages[currentPage]||'';
+  back.innerHTML=pages[currentPage-pagesPerSpread]||'';
+  turning.style.right=pagesPerSpread===2?'50%':'0';
+  turning.style.transformOrigin='right center';
+ }
+
+ turning.classList.remove('animate');
+ void turning.offsetWidth;
+ turning.classList.add('animate');
+
+ if(direction===-1){
+  turning.style.animationDirection='reverse';
+ }else{
+  turning.style.animationDirection='normal';
+ }
+
+ setTimeout(()=>{
+  currentPage+=direction*pagesPerSpread;
+  renderBook();
+  turning.classList.remove('animate');
+  turning.style.animationDirection='normal';
+  isAnimating=false;
+ },660);
+}
+
+// CLOSE BOOK
+
+function closeBook(){
+ showScreen('messageScreen');
+}
+
+// MESSAGE
+
+function submitMessage(){
+ const message=document.getElementById('herMessage').value.trim();
+
+ if(!message){
+  alert('Baby, you forgot to write your message for Mizu! ♡');
+  return;
+ }
+
+ try{
+  sessionStorage.setItem('messageForMizu',message);
+ }catch(e){}
+
+ showScreen('finalScreen');
+}
+
+</script>
+</body>
+</html>
